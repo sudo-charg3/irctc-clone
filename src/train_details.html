@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Details - Indian Railways</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <!-- Same navigation as other pages -->
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html"><i class="fas fa-search"></i> Search Trains</a>
+                    
+                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="details-main">
+            <section class="train-details-header">
+                <div class="back-link">
+                    <a href="javascript:history.back()"><i class="fas fa-arrow-left"></i> Back to Search</a>
+                </div>
+                <div id="train-header" class="train-header">
+                    <h1 id="train-name">Loading train details...</h1>
+                    <div class="train-info">
+                        <span id="train-number"></span> | 
+                        <span id="train-route"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="train-details-content">
+                <div class="journey-details">
+                    <div class="stations">
+                        <div class="departure">
+                            <h3 id="source-station">--</h3>
+                            <p id="departure-time">--:--</p>
+                        </div>
+                        <div class="journey-line">
+                            <span id="journey-duration">-- hrs</span>
+                        </div>
+                        <div class="arrival">
+                            <h3 id="destination-station">--</h3>
+                            <p id="arrival-time">--:--</p>
+                        </div>
+                    </div>
+                    <div class="running-days">
+                        <h4>Runs on</h4>
+                        <div class="days">
+                            <span class="day">S</span>
+                            <span class="day">M</span>
+                            <span class="day">T</span>
+                            <span class="day">W</span>
+                            <span class="day">T</span>
+                            <span class="day">F</span>
+                            <span class="day">S</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ticket-classes">
+                    <h3>Available Classes</h3>
+                    <div id="class-options" class="class-options">
+                        <div class="loading">Loading available classes...</div>
+                    </div>
+                </div>
+
+                <div id="booking-section" class="booking-section">
+                    <h3>Book Tickets</h3>
+                    <form id="booking-form">
+                        <input type="hidden" id="selected-train-id">
+                        <input type="hidden" id="selected-class">
+                        
+                        <div class="date-selection">
+                            <label for="journey-date">Journey Date</label>
+                            <input type="date" id="journey-date" required>
+                        </div>
+                        
+                        <div class="passenger-details">
+                            <h4>Passenger Information</h4>
+                            <div id="passengers-list">
+                                <div class="passenger">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Passenger Name" name="name[]" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" placeholder="Age" name="age[]" min="1" max="120" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <select name="gender[]" required>
+                                                <option value="">Select Gender</option>
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                                <option value="O">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="add-passenger" class="add-btn">
+                                <i class="fas fa-plus"></i> Add Passenger
+                            </button>
+                        </div>
+                        
+                        <div class="contact-details">
+                            <h4>Contact Information</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="email" id="contact-email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="tel" id="contact-phone" placeholder="Mobile Number" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" id="proceed-btn" class="proceed-btn">Proceed to Payment</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <!-- Same footer as other pages -->
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Same login modal as other pages -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

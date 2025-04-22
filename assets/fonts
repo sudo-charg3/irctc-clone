@@ -1,0 +1,12 @@
+railway-reservation-system
+├── src
+│   ├── css
+│   │   └── styles.css
+│   ├── js
+│   │   └── main.js
+│   └── index.html
+├── assets
+│   └── fonts
+├── docs
+│   └── README.md
+└── README.md

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Indian Railways</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html"><i class="fas fa-search"></i> Search Trains</a>
+                    <a href="bookings.html"><i class="fas fa-ticket"></i> My Bookings</a>
+                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="payment-main">
+            <div class="payment-container">
+                <div class="payment-header">
+                    <h2>Secure Payment</h2>
+                    <p>Complete your booking by making a payment</p>
+                </div>
+                
+                <div class="payment-content">
+                    <div class="booking-summary">
+                        <h3>Booking Summary</h3>
+                        <div id="booking-details">
+                            <div class="train-info">
+                                <h4 id="summary-train-name">Loading...</h4>
+                                <p id="summary-train-number"></p>
+                                <p><span id="summary-source"></span> → <span id="summary-destination"></span></p>
+                                <p>Date: <span id="summary-date"></span></p>
+                                <p>Class: <span id="summary-class"></span></p>
+                            </div>
+                            <div class="passenger-info">
+                                <h4>Passengers</h4>
+                                <ul id="passengers-summary"></ul>
+                            </div>
+                        </div>
+                        <div class="fare-summary">
+                            <div class="fare-row">
+                                <span>Base Fare</span>
+                                <span id="base-fare">₹0</span>
+                            </div>
+                            <div class="fare-row">
+                                <span>Reservation Charge</span>
+                                <span id="reservation-charge">₹0</span>
+                            </div>
+                            <div class="fare-row">
+                                <span>GST (5%)</span>
+                                <span id="gst">₹0</span>
+                            </div>
+                            <div class="fare-row total">
+                                <span>Total Amount</span>
+                                <span id="total-fare">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method">
+                        <h3>Payment Method</h3>
+                        <form id="payment-form">
+                            <div class="payment-options">
+                                <div class="payment-option">
+                                    <input type="radio" id="credit-card" name="payment-method" value="credit-card" checked>
+                                    <label for="credit-card">Credit Card</label>
+                                </div>
+                                <div class="payment-option">
+                                    <input type="radio" id="debit-card" name="payment-method" value="debit-card">
+                                    <label for="debit-card">Debit Card</label>
+                                </div>
+                                <div class="payment-option">
+                                    <input type="radio" id="upi" name="payment-method" value="upi">
+                                    <label for="upi">UPI</label>
+                                </div>
+                            </div>
+                            
+                            <div id="card-payment" class="payment-details">
+                                <div class="form-group">
+                                    <label for="card-number">Card Number</label>
+                                    <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiry-date">Expiry Date</label>
+                                        <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV</label>
+                                        <input type="password" id="cvv" placeholder="XXX" maxlength="3" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-name">Name on Card</label>
+                                    <input type="text" id="card-name" placeholder="Card Holder's Name" required>
+                                </div>
+                            </div>
+                            
+                            <div id="upi-payment" class="payment-details hidden">
+                                <div class="form-group">
+                                    <label for="upi-id">UPI ID</label>
+                                    <input type="text" id="upi-id" placeholder="username@upi" required>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="pay-btn">Pay ₹<span id="pay-amount">0</span></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <!-- Same footer as other pages -->
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

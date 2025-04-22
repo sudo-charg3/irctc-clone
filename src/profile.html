@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Indian Railways</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html"><i class="fas fa-search"></i> Search Trains</a>
+                    <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+                    <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="profile-main">
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-circle fa-5x"></i>
+                        <h3 id="user-name">Loading...</h3>
+                        <p id="user-email" class="user-email"></p>
+                    </div>
+                    <div class="profile-menu">
+                        <a href="#" class="active" data-tab="personal-info">
+                            <i class="fas fa-id-card"></i> Personal Information
+                        </a>
+                        <a href="#" data-tab="bookings">
+                            <i class="fas fa-ticket-alt"></i> My Bookings
+                        </a>
+                        <a href="#" data-tab="password">
+                            <i class="fas fa-lock"></i> Change Password
+                        </a>
+                        <a href="#" data-tab="preferences">
+                            <i class="fas fa-cog"></i> Preferences
+                        </a>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <!-- Personal Information Tab -->
+                    <div id="personal-info" class="profile-tab active">
+                        <h2 class="tab-title">Personal Information</h2>
+                        <form id="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="full-name">Full Name</label>
+                                    <input type="text" id="full-name" placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" placeholder="Your email">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" placeholder="Your phone number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dob">Date of Birth</label>
+                                    <input type="date" id="dob">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea id="address" placeholder="Your address"></textarea>
+                            </div>
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Bookings Tab -->
+                    <div id="bookings" class="profile-tab">
+                        <h2 class="tab-title">My Bookings</h2>
+                        <div id="bookings-list" class="bookings-list">
+                            <p class="loading">Loading your bookings...</p>
+                        </div>
+                    </div>
+
+                    <!-- Password Tab -->
+                    <div id="password" class="profile-tab">
+                        <h2 class="tab-title">Change Password</h2>
+                        <form id="password-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="save-btn">Update Password</button>
+                        </form>
+                    </div>
+
+                    <!-- Preferences Tab -->
+                    <div id="preferences" class="profile-tab">
+                        <h2 class="tab-title">Preferences</h2>
+                        <form id="preferences-form">
+                            <div class="form-group">
+                                <label>Preferred Class</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" value="1A"> First AC</label>
+                                    <label><input type="checkbox" value="2A" checked> Second AC</label>
+                                    <label><input type="checkbox" value="3A" checked> Third AC</label>
+                                    <label><input type="checkbox" value="SL"> Sleeper</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Meal Preference</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="meal" value="veg" checked> Vegetarian</label>
+                                    <label><input type="radio" name="meal" value="non-veg"> Non-Vegetarian</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="save-btn">Save Preferences</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "railway-reservation-system",
+  "version": "1.0.0",
+  "description": "## Overview The Railway Reservation System is a web application designed to facilitate the booking of train tickets. It provides users with an intuitive interface to search for train schedules, make reservations, and manage their bookings efficiently.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}

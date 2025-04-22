@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Trains - Indian Railways</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .suggestions-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ccc;
+            z-index: 9999;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f0f5ff;
+        }
+        
+        .autocomplete-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html" class="active"><i class="fas fa-search"></i> Search Trains</a>
+                    
+                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="search-main">
+            <section class="search-section">
+                <h2>Find Your Train</h2>
+                <form id="train-search-form">
+                    <div class="search-row">
+                        <div class="form-group">
+                            <label for="from"><i class="fas fa-map-marker-alt"></i> From</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="from" placeholder="Enter source station code or name" required autocomplete="off">
+                                <div id="from-suggestions" class="suggestions-dropdown"></div>
+                            </div>
+                        </div>
+                        <div class="swap-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="to"><i class="fas fa-map-marker"></i> To</label>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="to" placeholder="Enter destination station code or name" required autocomplete="off">
+                                <div id="to-suggestions" class="suggestions-dropdown"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-row">
+                        <div class="form-group">
+                            <label for="date"><i class="fas fa-calendar"></i> Journey Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="class-type"><i class="fas fa-train"></i> Class</label>
+                            <select id="class-type">
+                                <option value="all">All Classes</option>
+                                <option value="1A">First AC</option>
+                                <option value="2A">Second AC</option>
+                                <option value="3A">Third AC</option>
+                                <option value="SL">Sleeper</option>
+                                <option value="CC">Chair Car</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i> Search Trains</button>
+                </form>
+            </section>
+
+            <section id="results-section" class="results-section hidden">
+                <h2>Available Trains</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Filter by:</label>
+                        <select id="departure-filter">
+                            <option value="all">All Departures</option>
+                            <option value="morning">Morning (04:00 - 12:00)</option>
+                            <option value="afternoon">Afternoon (12:00 - 16:00)</option>
+                            <option value="evening">Evening (16:00 - 20:00)</option>
+                            <option value="night">Night (20:00 - 04:00)</option>
+                        </select>
+                        <select id="class-filter">
+                            <option value="all">All Classes</option>
+                            <option value="1A">First AC</option>
+                            <option value="2A">Second AC</option>
+                            <option value="3A">Third AC</option>
+                            <option value="SL">Sleeper</option>
+                        </select>
+                    </div>
+                    <div class="sort-group">
+                        <label>Sort by:</label>
+                        <select id="sort-option">
+                            <option value="departure">Departure Time</option>
+                            <option value="arrival">Arrival Time</option>
+                            <option value="duration">Journey Duration</option>
+                            <option value="price">Price</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="trains-list" class="trains-list"></div>
+                <div id="no-trains" class="no-results hidden">
+                    <i class="fas fa-train fa-3x"></i>
+                    <p>No trains found matching your search criteria.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Modal (same as in home.html) -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

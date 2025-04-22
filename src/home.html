@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Railways - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html" class="active"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html"><i class="fas fa-search"></i> Search Trains</a>
+                    
+                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="home-main">
+            <section class="hero-section">
+                <h2>Welcome to Indian Railways</h2>
+                <p>Book your train tickets quickly and easily</p>
+                <div class="welcome-content">
+                    <div class="info-card">
+                        <i class="fas fa-train fa-3x"></i>
+                        <h3>India's Largest Railway Network</h3>
+                        <p>Connect to over 7,000 stations across India with our extensive railway network. Experience comfort, convenience, and affordability on your journey.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-ticket-alt fa-3x"></i>
+                        <h3>Easy Booking Process</h3>
+                        <p>Book your tickets in less than 2 minutes with our simple booking flow. Secure payments, instant confirmations, and easy cancellations.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-map-marked-alt fa-3x"></i>
+                        <h3>Track Your Train</h3>
+                        <p>Get real-time updates on train status, delays, and platform changes. Stay informed throughout your journey.</p>
+                    </div>
+                </div>
+                <a href="train_search.html" class="cta-button">Search Trains</a>
+            </section>
+
+            <section class="popular-routes">
+                <h3>Popular Routes</h3>
+                <div class="routes-grid">
+                    <div class="route-card">
+                        <h4>Delhi - Mumbai</h4>
+                        <p>Rajdhani Express</p>
+                        <button onclick="searchRoute('Delhi', 'Mumbai')">Check Trains</button>
+                    </div>
+                    <!-- Add more route cards -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
