@@ -204,11 +204,12 @@ function requireAuth() {
     return true;
 }
 
-// Modify the fetchUserProfile function to get bookings too
+// Replace the existing fetchUserProfile function with this enhanced version
 async function fetchUserProfile() {
     if (!isLoggedIn()) return;
     
     try {
+        console.log('Fetching user profile...');
         const response = await fetch(`${API_URL}/profile`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -216,36 +217,155 @@ async function fetchUserProfile() {
         });
         
         if (response.ok) {
-            currentUser = await response.json();
+            const user = await response.json();
+            console.log('User profile loaded:', user);
             
-            // Update UI if on profile page
-            const userName = document.getElementById('user-name');
-            const userEmail = document.getElementById('user-email');
+            // Update UI with user data
+            document.getElementById('user-name').textContent = user.username;
+            document.getElementById('user-email').textContent = user.email;
             
-            if (userName) {
-                userName.textContent = currentUser.username || 'User';
-            }
-            
-            if (userEmail) {
-                userEmail.textContent = currentUser.email || '';
-            }
-            
-            // Fill profile form if exists
-            const fullNameInput = document.getElementById('full-name');
-            const emailInput = document.getElementById('email');
-            const phoneInput = document.getElementById('phone');
-            
-            if (fullNameInput) fullNameInput.value = currentUser.fullName || '';
-            if (emailInput) fullNameInput.value = currentUser.email || '';
-            if (phoneInput) emailInput.value = currentUser.phone || '';
-
             // If we're on the profile page, fetch bookings too
             if (window.location.pathname.includes('profile.html')) {
                 fetchUserBookings();
+                setupProfileTabs();
             }
+            
+            return user;
+        } else {
+            const errorData = await response.json();
+            console.error('Error fetching profile:', errorData);
+            showError(errorData.error || 'Failed to load profile');
         }
     } catch (error) {
         console.error('Error fetching profile:', error);
+        showError('Could not connect to server');
+    }
+}
+
+// Update or add the fetchUserBookings function
+async function fetchUserBookings() {
+    if (!isLoggedIn()) return;
+    
+    try {
+        console.log('Fetching user bookings...');
+        const response = await fetch(`${API_URL}/bookings`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const bookings = await response.json();
+            console.log('User bookings loaded:', bookings);
+            
+            // Update the bookings list in the UI
+            const bookingsList = document.getElementById('bookings-list');
+            if (!bookingsList) return;
+            
+            if (bookings.length === 0) {
+                bookingsList.innerHTML = `
+                    <div class="no-bookings">
+                        <i class="fas fa-ticket-alt fa-3x"></i>
+                        <p>You don't have any bookings yet.</p>
+                        <a href="train_search.html" class="search-link">Search for trains</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display the bookings
+            bookingsList.innerHTML = '';
+            bookings.forEach(booking => {
+                const bookingCard = document.createElement('div');
+                bookingCard.className = 'booking-card';
+                
+                // Format date for display
+                const journeyDate = new Date(booking.journey_date).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Create status badge with appropriate color
+                const statusClass = booking.status === 'CONFIRMED' ? 'status-confirmed' : 
+                                   booking.status === 'PENDING' ? 'status-pending' : 'status-cancelled';
+                
+                bookingCard.innerHTML = `
+                    <div class="booking-header">
+                        <div class="booking-train">
+                            <h3>${booking.train_name} (${booking.train_number})</h3>
+                            <p>${booking.source_station} → ${booking.destination_station}</p>
+                        </div>
+                        <div class="booking-status ${statusClass}">
+                            ${booking.status}
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <div class="booking-info">
+                            <p><i class="fas fa-calendar"></i> ${journeyDate}</p>
+                            <p><i class="fas fa-clock"></i> ${booking.departure_time} → ${booking.arrival_time}</p>
+                            <p><i class="fas fa-ticket-alt"></i> ${booking.class_type} - ₹${booking.price}</p>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="view-ticket-btn" data-booking-id="${booking.booking_id}">
+                                <i class="fas fa-eye"></i> View Ticket
+                            </button>
+                            ${booking.status === 'CONFIRMED' ? `
+                                <button class="cancel-btn" data-booking-id="${booking.booking_id}">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                bookingsList.appendChild(bookingCard);
+                
+                // Add event listeners for the buttons
+                const viewBtn = bookingCard.querySelector('.view-ticket-btn');
+                if (viewBtn) {
+                    viewBtn.addEventListener('click', () => {
+                        // Navigate to ticket page
+                        window.location.href = `ticket.html?bookingId=${booking.booking_id}`;
+                    });
+                }
+                
+                const cancelBtn = bookingCard.querySelector('.cancel-btn');
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', async () => {
+                        if (confirm('Are you sure you want to cancel this booking?')) {
+                            try {
+                                // Send cancellation request to server (you'll need to implement this API endpoint)
+                                const response = await fetch(`${API_URL}/bookings/${booking.booking_id}/cancel`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': `Bearer ${authToken}`
+                                    }
+                                });
+                                
+                                if (response.ok) {
+                                    showSuccess('Booking cancelled successfully');
+                                    fetchUserBookings(); // Refresh the bookings list
+                                } else {
+                                    const error = await response.json();
+                                    showError(error.message || 'Failed to cancel booking');
+                                }
+                            } catch (error) {
+                                showError('Could not connect to server');
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            const errorData = await response.json();
+            console.error('Error fetching bookings:', errorData);
+            showError(errorData.error || 'Failed to load bookings');
+        }
+    } catch (error) {
+        console.error('Error fetching bookings:', error);
+        showError('Could not connect to server');
     }
 }
 
@@ -764,9 +884,11 @@ async function loadTrainDetails() {
     
     try {
         const response = await fetch(`${API_URL}/train/${trainId}`);
-        const train = await response.json();
+        if (!response.ok) {
+            throw new Error(`Failed to load train details: ${response.status}`);
+        }
         
-        if (!response.ok) throw new Error('Failed to load train details');
+        const train = await response.json();
         
         // Update train header
         document.getElementById('train-name').textContent = train.train_name;
@@ -780,20 +902,42 @@ async function loadTrainDetails() {
         document.getElementById('arrival-time').textContent = train.arrival_time;
         
         // Calculate and display duration
-        const dep = new Date(`2000-01-01T${train.departure_time}`);
-        const arr = new Date(`2000-01-01T${train.arrival_time}`);
-        let diff = (arr - dep) / 3600000; // hours
-        if (diff < 0) diff += 24; // Handle overnight journeys
-        document.getElementById('journey-duration').textContent = `${diff.toFixed(1)} hrs`;
+        const dep = train.departure_time.includes(':') ? train.departure_time : '00:00';
+        const arr = train.arrival_time.includes(':') ? train.arrival_time : '00:00';
+        
+        const [depHours, depMinutes] = dep.split(':').map(Number);
+        const [arrHours, arrMinutes] = arr.split(':').map(Number);
+        
+        let durationHours = arrHours - depHours;
+        let durationMinutes = arrMinutes - depMinutes;
+        
+        if (durationMinutes < 0) {
+            durationMinutes += 60;
+            durationHours -= 1;
+        }
+        
+        if (durationHours < 0) {
+            durationHours += 24; // Overnight journey
+        }
+        
+        const duration = `${durationHours}h ${durationMinutes}m`;
+        document.getElementById('journey-duration').textContent = duration;
         
         // Show available classes
         const classOptions = document.getElementById('class-options');
         classOptions.innerHTML = '';
         
+        if (!train.classes || train.classes.length === 0) {
+            classOptions.innerHTML = '<p>No class information available</p>';
+            return;
+        }
+        
         train.classes.forEach(cls => {
             const classCard = document.createElement('div');
             classCard.className = `class-card ${cls.class_type === classType ? 'selected' : ''}`;
             classCard.dataset.classType = cls.class_type;
+            classCard.dataset.seatId = cls.seat_id || '';
+            classCard.dataset.price = cls.price || 0;
             
             classCard.innerHTML = `
                 <div class="class-name">${getClassName(cls.class_type)}</div>
@@ -805,28 +949,117 @@ async function loadTrainDetails() {
             
             classOptions.appendChild(classCard);
             
-            // Add event listener
+            // Add event listener for class selection
             classCard.addEventListener('click', () => {
+                // Remove selected class from all cards
                 document.querySelectorAll('.class-card').forEach(card => {
                     card.classList.remove('selected');
                 });
+                
+                // Add selected class to this card
                 classCard.classList.add('selected');
+                
+                // Update hidden input with selected class
                 document.getElementById('selected-class').value = cls.class_type;
+                document.getElementById('selected-train-id').value = trainId;
             });
         });
         
-        // Set default selected class
+        // Set default selected class if provided in URL
         if (classType) {
             document.getElementById('selected-class').value = classType;
+            
+            // Also set default date to today + 1 day
+            const journeyDateInput = document.getElementById('journey-date');
+            if (journeyDateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                journeyDateInput.valueAsDate = tomorrow;
+                journeyDateInput.min = new Date().toISOString().split('T')[0]; // Set min to today
+            }
         }
         
-        // Set train ID in the form
-        document.getElementById('selected-train-id').value = trainId;
-        
     } catch (error) {
-        showError('Failed to load train details');
-        console.error(error);
+        showError(`Failed to load train details: ${error.message}`);
+        console.error('Train details error:', error);
     }
+}
+
+// Setup booking form submission
+function setupBookingForm() {
+    const bookingForm = document.getElementById('booking-form');
+    if (!bookingForm) return;
+    
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!isLoggedIn()) {
+            showError('Please login to book tickets');
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) loginModal.classList.remove('hidden');
+            return;
+        }
+        
+        const trainId = document.getElementById('selected-train-id').value;
+        const classType = document.getElementById('selected-class').value;
+        const journeyDate = document.getElementById('journey-date').value;
+        
+        if (!trainId || !classType) {
+            showError('Please select a class type for your journey');
+            return;
+        }
+        
+        if (!journeyDate) {
+            showError('Please select a journey date');
+            return;
+        }
+        
+        // Get all passengers
+        const passengerNames = Array.from(document.getElementsByName('name[]')).map(input => input.value);
+        const passengerAges = Array.from(document.getElementsByName('age[]')).map(input => input.value);
+        const passengerGenders = Array.from(document.getElementsByName('gender[]')).map(input => input.value);
+        
+        if (passengerNames.length === 0 || passengerNames.some(name => !name)) {
+            showError('Please enter passenger details');
+            return;
+        }
+        
+        // Collect passenger data
+        const passengers = passengerNames.map((name, index) => ({
+            name,
+            age: passengerAges[index],
+            gender: passengerGenders[index]
+        }));
+        
+        // Get contact info
+        const email = document.getElementById('contact-email').value;
+        const phone = document.getElementById('contact-phone').value;
+        
+        // Save booking data to sessionStorage for payment page
+        const bookingData = {
+            trainId,
+            classType,
+            journeyDate,
+            passengers,
+            contactInfo: { email, phone },
+            // Get these from the page
+            trainName: document.getElementById('train-name').textContent,
+            trainNumber: document.getElementById('train-number').textContent,
+            sourceStation: document.getElementById('source-station').textContent,
+            destStation: document.getElementById('destination-station').textContent,
+            departureTime: document.getElementById('departure-time').textContent,
+            arrivalTime: document.getElementById('arrival-time').textContent,
+            price: document.querySelector(`.class-card.selected .price`).textContent
+        };
+        
+        sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+        
+        // Create dummy booking ID
+        const bookingId = 'BK' + Date.now().toString().substr(-8);
+        
+        // Redirect to payment page
+        window.location.href = `payment.html?bookingId=${bookingId}`;
+    });
 }
 
 // Helper to get full class name
@@ -842,7 +1075,7 @@ function getClassName(classCode) {
     return classNames[classCode] || classCode;
 }
 
-// Add passenger in booking form
+// Updated passenger management functions
 function setupAddPassenger() {
     const addBtn = document.getElementById('add-passenger');
     const passengersList = document.getElementById('passengers-list');
@@ -887,53 +1120,70 @@ function loadPaymentDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const bookingId = urlParams.get('bookingId');
     
-    if (!bookingId) return;
-    
-    // In a real app, fetch booking details from API
-    // For now, use dummy data
-    const booking = {
-        trainName: 'Rajdhani Express',
-        trainNumber: '12951',
-        source: 'New Delhi',
-        destination: 'Mumbai',
-        date: '2024-04-25',
-        class: '2A',
-        passengers: [
-            { name: 'John Doe', age: 28, gender: 'M' },
-            { name: 'Jane Doe', age: 26, gender: 'F' }
-        ],
-        baseFare: 2500,
-        reservationCharge: 60,
-        gst: 128
-    };
-    
-    // Update UI with booking details
-    document.getElementById('summary-train-name').textContent = booking.trainName;
-    document.getElementById('summary-train-number').textContent = booking.trainNumber;
-    document.getElementById('summary-source').textContent = booking.source;
-    document.getElementById('summary-destination').textContent = booking.destination;
-    document.getElementById('summary-date').textContent = booking.date;
-    document.getElementById('summary-class').textContent = getClassName(booking.class);
-    
-    // Update passengers list
-    const passengersList = document.getElementById('passengers-summary');
-    if (passengersList) {
-        passengersList.innerHTML = '';
-        booking.passengers.forEach(passenger => {
-            const li = document.createElement('li');
-            li.textContent = `${passenger.name} (${passenger.age}, ${passenger.gender})`;
-            passengersList.appendChild(li);
-        });
+    if (!bookingId) {
+        showError('Invalid booking reference');
+        return;
     }
     
-    // Update fare details
-    document.getElementById('base-fare').textContent = `₹${booking.baseFare}`;
-    document.getElementById('reservation-charge').textContent = `₹${booking.reservationCharge}`;
-    document.getElementById('gst').textContent = `₹${booking.gst}`;
+    // Get booking data from session storage
+    const bookingDataStr = sessionStorage.getItem('bookingData');
+    if (!bookingDataStr) {
+        showError('Booking data not found');
+        return;
+    }
     
-    const totalFare = booking.baseFare + booking.reservationCharge + booking.gst;
-    document.getElementById('total-fare').textContent = `₹${totalFare}`;
-    document.getElementById('pay-amount').textContent = totalFare;
+    try {
+        const booking = JSON.parse(bookingDataStr);
+        booking.bookingId = bookingId;
+        
+        console.log("Retrieved booking data:", booking);
+        
+        // Update UI with booking details
+        document.getElementById('summary-train-name').textContent = booking.trainName;
+        document.getElementById('summary-train-number').textContent = booking.trainNumber;
+        document.getElementById('summary-source').textContent = booking.sourceStation;
+        document.getElementById('summary-destination').textContent = booking.destStation;
+        document.getElementById('summary-date').textContent = booking.journeyDate;
+        document.getElementById('summary-class').textContent = getClassName(booking.classType);
+        
+        // Update passengers list
+        const passengersList = document.getElementById('passengers-summary');
+        if (passengersList) {
+            passengersList.innerHTML = '';
+            booking.passengers.forEach(passenger => {
+                const li = document.createElement('li');
+                li.textContent = `${passenger.name} (${passenger.age}, ${passenger.gender})`;
+                passengersList.appendChild(li);
+            });
+        }
+        
+        // Calculate fare
+        const basePrice = parseInt(booking.price.replace('₹', ''));
+        const totalPassengers = booking.passengers.length;
+        const baseFare = basePrice * totalPassengers;
+        const reservationCharge = 60 * totalPassengers;
+        const gst = Math.round(baseFare * 0.05);
+        const totalFare = baseFare + reservationCharge + gst;
+        
+        // Update fare details
+        document.getElementById('base-fare').textContent = `₹${baseFare}`;
+        document.getElementById('reservation-charge').textContent = `₹${reservationCharge}`;
+        document.getElementById('gst').textContent = `₹${gst}`;
+        document.getElementById('total-fare').textContent = `₹${totalFare}`;
+        document.getElementById('pay-amount').textContent = totalFare;
+        
+        // Store calculation for payment processing
+        sessionStorage.setItem('fareDetails', JSON.stringify({
+            baseFare,
+            reservationCharge,
+            gst,
+            totalFare
+        }));
+        
+    } catch (error) {
+        console.error('Error loading payment details:', error);
+        showError('Failed to load booking details');
+    }
 }
 
 // Station autocomplete functionality
@@ -1196,11 +1446,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentPage === 'train_details.html') {
         loadTrainDetails();
         setupAddPassenger();
+        setupBookingForm();
     } else if (currentPage === 'payment.html') {
         // Redirect if not logged in
         if (!requireAuth()) return;
         
         loadPaymentDetails();
+        setupPaymentMethodToggle();
+        setupPaymentForm(); // Add this new function call
     } else if (currentPage === 'train_search.html') {
         // Set default date
         setDefaultDate();
@@ -1226,4 +1479,374 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+});
+
+// Add this to your existing document ready handler in main.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    
+    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+    
+    if (currentPage === 'train_details.html') {
+        loadTrainDetails();
+        setupAddPassenger();
+        setupBookingForm();
+    } else if (currentPage === 'payment.html') {
+        loadPaymentDetails();
+        setupPaymentMethodToggle();
+    } 
+    
+    // ...existing code...
+});
+
+// Add payment method toggle
+function setupPaymentMethodToggle() {
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+    const cardPayment = document.getElementById('card-payment');
+    const upiPayment = document.getElementById('upi-payment');
+    
+    if (!paymentMethods.length || !cardPayment || !upiPayment) return;
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', () => {
+            if (method.value === 'upi') {
+                cardPayment.classList.add('hidden');
+                upiPayment.classList.remove('hidden');
+            } else {
+                cardPayment.classList.remove('hidden');
+                upiPayment.classList.add('hidden');
+            }
+        });
+    });
+}
+
+// Add this to your document ready function
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    
+    if (currentPage === 'payment.html') {
+        loadPaymentDetails();
+        setupPaymentMethodToggle();
+    }
+    
+    // ...existing code...
+});
+
+// Add this function to handle payment form submission
+function setupPaymentForm() {
+    const paymentForm = document.getElementById('payment-form');
+    
+    if (!paymentForm) return;
+    
+    paymentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('bookingId');
+        
+        if (!bookingId) {
+            showError('Invalid booking reference');
+            return;
+        }
+        
+        // Get booking and fare data from session storage
+        const bookingDataStr = sessionStorage.getItem('bookingData');
+        const fareDetailsStr = sessionStorage.getItem('fareDetails');
+        
+        if (!bookingDataStr || !fareDetailsStr) {
+            showError('Booking data not found');
+            return;
+        }
+        
+        try {
+            const booking = JSON.parse(bookingDataStr);
+            const fareDetails = JSON.parse(fareDetailsStr);
+            
+            // Show loading state
+            const payButton = document.querySelector('.pay-btn');
+            payButton.disabled = true;
+            payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            // Get payment method
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            let paymentDetails = {};
+            
+            // For UPI payment - accept any UPI ID without validation
+            if (paymentMethod === 'upi') {
+                const upiId = document.getElementById('upi-id').value;
+                if (!upiId) {
+                    showError('Please enter UPI ID');
+                    payButton.disabled = false;
+                    payButton.innerHTML = `Pay ₹${fareDetails.totalFare}`;
+                    return;
+                }
+                
+                paymentDetails = { type: 'upi', upiId };
+            } 
+            // For card payment
+            else {
+                const cardNumber = document.getElementById('card-number').value;
+                const expiryDate = document.getElementById('expiry-date').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardholderName = document.getElementById('card-name').value;
+                
+                if (!cardNumber || !expiryDate || !cvv || !cardholderName) {
+                    showError('Please fill in all card details');
+                    payButton.disabled = false;
+                    payButton.innerHTML = `Pay ₹${fareDetails.totalFare}`;
+                    return;
+                }
+                
+                paymentDetails = {
+                    type: 'card',
+                    cardNumber,
+                    expiryDate,
+                    cardholderName
+                };
+            }
+            
+            // Create ticket data combining booking and payment details
+            const ticketData = {
+                ...booking,
+                bookingId,
+                ...fareDetails,
+                paymentMethod,
+                paymentDetails,
+                paymentDate: new Date().toISOString(),
+                status: 'CONFIRMED'
+            };
+            
+            // Store ticket data in sessionStorage for the ticket page
+            sessionStorage.setItem('ticketData', JSON.stringify(ticketData));
+            
+            // Simulate payment processing delay
+            setTimeout(function() {
+                window.location.href = `ticket.html?bookingId=${bookingId}`;
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Payment processing error:', error);
+            showError('Payment processing failed');
+            
+            // Reset button state
+            const payButton = document.querySelector('.pay-btn');
+            payButton.disabled = false;
+            payButton.innerHTML = 'Retry Payment';
+        }
+    });
+}
+
+// Add this function to setup the profile tabs
+function setupProfileTabs() {
+    const tabLinks = document.querySelectorAll('.profile-menu a');
+    const tabs = document.querySelectorAll('.profile-tab');
+    
+    if (tabLinks.length === 0 || tabs.length === 0) return;
+    
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links and tabs
+            tabLinks.forEach(l => l.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Show the corresponding tab
+            const tabId = this.getAttribute('data-tab');
+            const tab = document.getElementById(tabId);
+            if (tab) {
+                tab.classList.add('active');
+                
+                // If bookings tab is selected, refresh the bookings
+                if (tabId === 'bookings') {
+                    fetchUserBookings();
+                }
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    
+    // Init functions based on current page
+    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+    
+    if (currentPage === 'profile.html') {
+        // Redirect if not logged in
+        if (!requireAuth()) return;
+        
+        // Fetch profile and set up tabs
+        fetchUserProfile();
+        setupProfileTabs();
+        
+        // Ensure first tab is active by default
+        const firstTabLink = document.querySelector('.profile-menu a');
+        const firstTabId = firstTabLink?.getAttribute('data-tab');
+        if (firstTabId) {
+            const firstTab = document.getElementById(firstTabId);
+            if (firstTab) {
+                firstTab.classList.add('active');
+                firstTabLink.classList.add('active');
+            }
+        }
+    } else if (currentPage === 'train_details.html') {
+        // ...existing code...
+    }
+    // ...existing code...
+});
+
+// Add this to your main.js file
+
+// Set up tourism carousel
+function setupTourismCarousel() {
+    const track = document.querySelector('.carousel-track');
+    if (!track) return;
+    
+    const slides = Array.from(track.children);
+    const nextButton = document.querySelector('.next-button');
+    const prevButton = document.querySelector('.prev-button');
+    const dotsNav = document.querySelector('.carousel-nav');
+    const dots = Array.from(dotsNav.children);
+    
+    const slideWidth = slides[0].getBoundingClientRect().width;
+    
+    // Arrange slides next to each other
+    slides.forEach((slide, index) => {
+        slide.style.left = slideWidth * index + 'px';
+    });
+    
+    // Move slide function
+    const moveToSlide = (track, currentSlide, targetSlide) => {
+        track.style.transform = 'translateX(-' + targetSlide.style.left + ')';
+        currentSlide.classList.remove('current-slide');
+        targetSlide.classList.add('current-slide');
+    };
+    
+    // Update dots function
+    const updateDots = (currentDot, targetDot) => {
+        currentDot.classList.remove('current-slide');
+        targetDot.classList.add('current-slide');
+    };
+    
+    // Hide arrows at beginning and end
+    const hideShowArrows = (slides, prevButton, nextButton, targetIndex) => {
+        if (targetIndex === 0) {
+            prevButton.classList.add('is-hidden');
+            nextButton.classList.remove('is-hidden');
+        } else if (targetIndex === slides.length - 1) {
+            prevButton.classList.remove('is-hidden');
+            nextButton.classList.add('is-hidden');
+        } else {
+            prevButton.classList.remove('is-hidden');
+            nextButton.classList.remove('is-hidden');
+        }
+    };
+    
+    // When click left, move slides left
+    prevButton.addEventListener('click', e => {
+        const currentSlide = track.querySelector('.current-slide');
+        const prevSlide = currentSlide.previousElementSibling;
+        const currentDot = dotsNav.querySelector('.current-slide');
+        const prevDot = currentDot.previousElementSibling;
+        const prevIndex = slides.findIndex(slide => slide === prevSlide);
+        
+        if (!prevSlide) return;
+        
+        moveToSlide(track, currentSlide, prevSlide);
+        updateDots(currentDot, prevDot);
+        hideShowArrows(slides, prevButton, nextButton, prevIndex);
+    });
+    
+    // When click right, move slides right
+    nextButton.addEventListener('click', e => {
+        const currentSlide = track.querySelector('.current-slide');
+        const nextSlide = currentSlide.nextElementSibling;
+        const currentDot = dotsNav.querySelector('.current-slide');
+        const nextDot = currentDot.nextElementSibling;
+        const nextIndex = slides.findIndex(slide => slide === nextSlide);
+        
+        if (!nextSlide) return;
+        
+        moveToSlide(track, currentSlide, nextSlide);
+        updateDots(currentDot, nextDot);
+        hideShowArrows(slides, prevButton, nextButton, nextIndex);
+    });
+    
+    // When click indicators, move to that slide
+    dotsNav.addEventListener('click', e => {
+        const targetDot = e.target.closest('button');
+        
+        if (!targetDot) return;
+        
+        const currentSlide = track.querySelector('.current-slide');
+        const currentDot = dotsNav.querySelector('.current-slide');
+        const targetIndex = dots.findIndex(dot => dot === targetDot);
+        const targetSlide = slides[targetIndex];
+        
+        moveToSlide(track, currentSlide, targetSlide);
+        updateDots(currentDot, targetDot);
+        hideShowArrows(slides, prevButton, nextButton, targetIndex);
+    });
+    
+    // Auto slide every 5 seconds
+    let slideInterval = setInterval(() => {
+        const currentSlide = track.querySelector('.current-slide');
+        let nextSlide = currentSlide.nextElementSibling;
+        
+        if (!nextSlide) {
+            nextSlide = slides[0]; // Loop back to first slide
+        }
+        
+        const currentDot = dotsNav.querySelector('.current-slide');
+        const nextIndex = slides.findIndex(slide => slide === nextSlide);
+        const nextDot = dots[nextIndex];
+        
+        moveToSlide(track, currentSlide, nextSlide);
+        updateDots(currentDot, nextDot);
+        hideShowArrows(slides, prevButton, nextButton, nextIndex);
+    }, 5000);
+    
+    // Stop auto slide on hover
+    track.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+    });
+    
+    // Resume auto slide when mouse leaves
+    track.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(() => {
+            const currentSlide = track.querySelector('.current-slide');
+            let nextSlide = currentSlide.nextElementSibling;
+            
+            if (!nextSlide) {
+                nextSlide = slides[0]; // Loop back to first slide
+            }
+            
+            const currentDot = dotsNav.querySelector('.current-slide');
+            const nextIndex = slides.findIndex(slide => slide === nextSlide);
+            const nextDot = dots[nextIndex];
+            
+            moveToSlide(track, currentSlide, nextSlide);
+            updateDots(currentDot, nextDot);
+            hideShowArrows(slides, prevButton, nextButton, nextIndex);
+        }, 5000);
+    });
+}
+
+// Add the carousel setup to your DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    
+    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+    
+    if (currentPage === 'home.html') {
+        setupTourismCarousel();
+    }
+    
+    // ...existing code...
 });

@@ -25,7 +25,7 @@ body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     background-color: var(--background-color);
-    color: var(--text-color);
+    color: #000000 !important;
 }
 
 .page-wrapper {
@@ -101,6 +101,7 @@ nav {
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     transition: var(--transition);
+    box-shadow: none !important;
 }
 
 .login-btn:hover, .logout-btn:hover {
@@ -129,32 +130,29 @@ main {
     margin-bottom: 2rem;
 }
 
+/* Remove this entire ::before rule to eliminate the dark overlay */
 .hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    display: none; /* This effectively disables the overlay */
 }
 
-.hero-section h2, 
-.hero-section p, 
-.hero-section .quick-search {
-    position: relative;
-    z-index: 2;
-}
-
+/* Enhanced text styling for better readability without the overlay */
 .hero-section h2 {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin-bottom: 1rem;
+    text-shadow: none !important;
+    color: white;
 }
 
 .hero-section p {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 2rem;
+    text-shadow: none !important;
+    color: white;
+}
+
+.hero-section .quick-search {
+    position: relative;
+    z-index: 2;
 }
 
 .quick-search {
@@ -205,6 +203,7 @@ main {
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     transition: var(--transition);
+    box-shadow: none !important;
 }
 
 .search-btn:hover {
@@ -370,9 +369,9 @@ main {
     background-color: white;
     padding: 1.5rem;
     border-radius: var(--border-radius);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: none !important;
     transition: var(--transition);
-    border: 1px solid var(--border-color);
+    border: 1px solid #e0e0e0 !important;
 }
 
 .train-card:hover {
@@ -497,6 +496,7 @@ main {
     font-family: 'Poppins', sans-serif;
     transition: var(--transition);
     margin-top: 1rem;
+    box-shadow: none !important;
 }
 
 .book-btn:hover {
@@ -751,6 +751,7 @@ main {
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
     transition: var(--transition);
+    box-shadow: none !important;
 }
 
 .proceed-btn:hover {
@@ -768,6 +769,8 @@ main {
 .payment-container {
     width: 100%;
     max-width: 900px;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .payment-header {
@@ -789,8 +792,9 @@ main {
 .booking-summary {
     background-color: white;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: none !important;
     padding: 2rem;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .booking-summary h3 {
@@ -861,8 +865,9 @@ main {
 .payment-method {
     background-color: white;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: none !important;
     padding: 2rem;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .payment-method h3 {
@@ -922,6 +927,7 @@ main {
     font-size: 1rem;
     width: 100%;
     transition: var(--transition);
+    box-shadow: none !important;
 }
 
 .pay-btn:hover {
@@ -941,8 +947,9 @@ main {
     max-width: 300px;
     background-color: white;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: none !important;
     padding: 2rem;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .user-avatar {
@@ -1005,9 +1012,10 @@ main {
 .profile-tab {
     background-color: white;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    box-shadow: none !important;
     padding: 2rem;
     display: none;
+    border: 1px solid #e0e0e0 !important;
 }
 
 .profile-tab.active {
@@ -1317,6 +1325,7 @@ footer {
     text-decoration: none;
     margin-top: 2rem;
     transition: all 0.3s ease;
+    box-shadow: none !important;
 }
 
 .cta-button:hover {
@@ -1333,14 +1342,16 @@ footer {
     margin-top: 2rem;
 }
 
+/* Add background to info cards for better contrast */
 .info-card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95); /* More opaque background */
     color: var(--text-color);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     max-width: 280px;
     text-align: center;
     transition: transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Stronger shadow */
 }
 
 .info-card:hover {
@@ -1359,4 +1370,306 @@ footer {
 
 .info-card p {
     font-size: 0.9rem;
+}
+
+/* Add these styles to the styles.css file */
+
+.booking-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: none !important;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e0e0e0 !important;
+    overflow: hidden;
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem;
+    background-color: #f9fafc;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.booking-train h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.booking-train p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.booking-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    background-color: #e3f5e9;
+    color: #2ecc71;
+}
+
+.status-pending {
+    background-color: #fef9e8;
+    color: #f39c12;
+}
+
+.status-cancelled {
+    background-color: #fde9e9;
+    color: #e74c3c;
+}
+
+.booking-details {
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-info p {
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.booking-info i {
+    width: 20px;
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.view-ticket-btn, .cancel-btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.view-ticket-btn {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: none !important;
+}
+
+.view-ticket-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.cancel-btn {
+    background-color: #f8f9fa;
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+.cancel-btn:hover {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+}
+
+.no-bookings i {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.search-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.search-link:hover {
+    text-decoration: underline;
+}
+
+/* Add these styles to your styles.css file */
+.tourism-showcase {
+    padding: 3rem 0;
+    background-color: #f8f9fa;
+}
+
+.tourism-showcase h3 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.carousel-track-container {
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.carousel-slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+}
+
+.destination-card {
+    display: flex;
+    height: 400px;
+    background-color: white;
+    overflow: hidden;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+.destination-image {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.destination-info {
+    width: 50%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.destination-info h4 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.destination-info p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.destination-link {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: auto;
+    align-self: flex-start;
+    box-shadow: none !important;
+}
+
+.destination-link:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.carousel-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.prev-button {
+    left: 10px;
+}
+
+.next-button {
+    right: 10px;
+}
+
+.carousel-nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.carousel-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background-color: #ddd;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.carousel-indicator.current-slide {
+    background-color: var(--primary-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .destination-card {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .destination-image, 
+    .destination-info {
+        width: 100%;
+    }
+    
+    .destination-image {
+        height: 200px;
+    }
+}
+
+/* Clean up the ticket page */
+.ticket-container {
+    box-shadow: none !important;
+    border: 1px solid #e0e0e0 !important;
 }

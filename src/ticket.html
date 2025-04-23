@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Ticket - Indian Railways</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ticket-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .ticket-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ticket-logo {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .ticket-status {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ticket-details {
+            margin-bottom: 2rem;
+        }
+        
+        .ticket-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .ticket-column {
+            flex: 1;
+        }
+        
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .passenger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        
+        .passenger-table th {
+            background-color: #f5f7fa;
+            text-align: left;
+            padding: 1rem;
+        }
+        
+        .passenger-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .ticket-footer {
+            background-color: #f9fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+        }
+        
+        .footer-heading {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+        }
+        
+        .important-info {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .important-info li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .important-info li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        
+        .action-buttons {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .print-btn {
+            background-color: var(--text-color);
+            color: white;
+        }
+        
+        .download-btn, .print-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+        
+        .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .download-btn:hover, .print-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .barcode {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .barcode img {
+            max-width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="assets/images/train-logo.png" alt="Railway Logo">
+                    <h1>Indian Railways</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="train_search.html"><i class="fas fa-search"></i> Search Trains</a>
+                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <button id="loginBtn" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="ticket-main">
+            <div class="ticket-container">
+                <div class="ticket-header">
+                    <div class="ticket-title">
+                        <img src="assets/images/train-logo.png" alt="Railway Logo" class="ticket-logo">
+                        <div>
+                            <h2>E-Ticket / Reservation Voucher</h2>
+                            <p id="booking-id">Booking ID: Loading...</p>
+                        </div>
+                    </div>
+                    <div class="ticket-status">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Confirmed</span>
+                    </div>
+                </div>
+                
+                <div class="ticket-details">
+                    <div class="ticket-row">
+                        <div class="ticket-column">
+                            <div class="detail-label">Train Number & Name</div>
+                            <div class="detail-value" id="train-name">Loading...</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">Journey Date</div>
+                            <div class="detail-value" id="journey-date">Loading...</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">Class</div>
+                            <div class="detail-value" id="class-type">Loading...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-row">
+                        <div class="ticket-column">
+                            <div class="detail-label">From</div>
+                            <div class="detail-value" id="source-station">Loading...</div>
+                            <div id="departure-time" class="detail-value" style="color: var(--text-light);">Loading...</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">To</div>
+                            <div class="detail-value" id="destination-station">Loading...</div>
+                            <div id="arrival-time" class="detail-value" style="color: var(--text-light);">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Passenger Details</h3>
+                <table class="passenger-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="passenger-list">
+                        <!-- Passenger information will be added here -->
+                    </tbody>
+                </table>
+                
+                <div class="fare-summary">
+                    <div class="ticket-row">
+                        <div class="ticket-column">
+                            <div class="detail-label">Base Fare</div>
+                            <div class="detail-value" id="base-fare">₹0</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">Reservation Charge</div>
+                            <div class="detail-value" id="reservation-charge">₹0</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">GST</div>
+                            <div class="detail-value" id="gst">₹0</div>
+                        </div>
+                        <div class="ticket-column">
+                            <div class="detail-label">Total Fare</div>
+                            <div class="detail-value" id="total-fare">₹0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="barcode">
+                    <img src="https://www.barcodesinc.com/generator/image.php?code=IRN12345678&style=197&type=C128B&width=200&height=50&xres=1&font=3" alt="Barcode">
+                </div>
+                
+                <div class="ticket-footer">
+                    <div class="footer-heading">Important Information:</div>
+                    <ul class="important-info">
+                        <li>Please carry original ID proof during journey for verification.</li>
+                        <li>E-ticket is valid only with ID proof in original. If found traveling without ID proof, passenger will be treated as without ticket and charged as per rules.</li>
+                        <li>Arrive at the station at least 30 minutes before the departure time.</li>
+                        <li>For cancellations, visit the 'My Bookings' section in your profile.</li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="download-btn" onclick="window.print()">
+                        <i class="fas fa-download"></i> Download Ticket
+                    </button>
+                    <button class="print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Ticket
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Terms & Conditions</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> 24x7 Helpline: 139</p>
+                    <p><i class="fas fa-envelope"></i> care@indianrail.gov.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Indian Railways. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // This specific page script
+        document.addEventListener('DOMContentLoaded', () => {
+            displayTicket();
+        });
+        
+        function displayTicket() {
+            // Get ticket data from session storage
+            const ticketDataStr = sessionStorage.getItem('ticketData');
+            if (!ticketDataStr) {
+                showError('Ticket data not found');
+                return;
+            }
+            
+            try {
+                const ticket = JSON.parse(ticketDataStr);
+                
+                // Update ticket details
+                document.getElementById('booking-id').textContent = `Booking ID: ${ticket.bookingId}`;
+                document.getElementById('train-name').textContent = `${ticket.trainNumber} - ${ticket.trainName}`;
+                document.getElementById('journey-date').textContent = ticket.journeyDate;
+                document.getElementById('class-type').textContent = getClassName(ticket.classType);
+                
+                document.getElementById('source-station').textContent = ticket.sourceStation;
+                document.getElementById('destination-station').textContent = ticket.destStation;
+                document.getElementById('departure-time').textContent = ticket.departureTime;
+                document.getElementById('arrival-time').textContent = ticket.arrivalTime;
+                
+                // Update passenger list
+                const passengerList = document.getElementById('passenger-list');
+                if (passengerList && ticket.passengers) {
+                    passengerList.innerHTML = '';
+                    ticket.passengers.forEach((passenger, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${passenger.name}</td>
+                            <td>${passenger.age}</td>
+                            <td>${passenger.gender}</td>
+                            <td>Confirmed</td>
+                        `;
+                        passengerList.appendChild(row);
+                    });
+                }
+                
+                // Update fare details
+                document.getElementById('base-fare').textContent = `₹${ticket.baseFare}`;
+                document.getElementById('reservation-charge').textContent = `₹${ticket.reservationCharge}`;
+                document.getElementById('gst').textContent = `₹${ticket.gst}`;
+                document.getElementById('total-fare').textContent = `₹${ticket.totalFare}`;
+                
+            } catch (error) {
+                console.error('Error displaying ticket:', error);
+                showError('Failed to display ticket details');
+            }
+        }
+        
+        function getClassName(classCode) {
+            const classNames = {
+                '1A': 'First AC',
+                '2A': 'Second AC', 
+                '3A': 'Third AC',
+                'SL': 'Sleeper',
+                'CC': 'Chair Car',
+                'EC': 'Executive Chair Car',
+                'GN': 'General'
+            };
+            return classNames[classCode] || classCode;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.classList.add('fade-out');
+                setTimeout(() => errorDiv.remove(), 500);
+            }, 3000);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Ticket page loaded");
+            // Get ticket data from session storage
+            const ticketDataStr = sessionStorage.getItem('ticketData');
+            
+            if (ticketDataStr) {
+                try {
+                    const ticket = JSON.parse(ticketDataStr);
+                    console.log("Ticket data loaded:", ticket);
+                    
+                    // Update ticket details
+                    document.getElementById('booking-id').textContent = `Booking ID: ${ticket.bookingId}`;
+                    document.getElementById('train-name').textContent = `${ticket.trainNumber} - ${ticket.trainName}`;
+                    document.getElementById('journey-date').textContent = ticket.journeyDate;
+                    document.getElementById('class-type').textContent = getClassName(ticket.classType);
+                    
+                    document.getElementById('source-station').textContent = ticket.sourceStation;
+                    document.getElementById('destination-station').textContent = ticket.destStation;
+                    document.getElementById('departure-time').textContent = ticket.departureTime;
+                    document.getElementById('arrival-time').textContent = ticket.arrivalTime;
+                    
+                    // Update passenger list
+                    const passengerList = document.getElementById('passenger-list');
+                    if (passengerList && ticket.passengers) {
+                        passengerList.innerHTML = '';
+                        ticket.passengers.forEach((passenger, index) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${index + 1}</td>
+                                <td>${passenger.name}</td>
+                                <td>${passenger.age}</td>
+                                <td>${passenger.gender}</td>
+                                <td>Confirmed</td>
+                            `;
+                            passengerList.appendChild(row);
+                        });
+                    }
+                    
+                    // Update fare details
+                    document.getElementById('base-fare').textContent = `₹${ticket.baseFare}`;
+                    document.getElementById('reservation-charge').textContent = `₹${ticket.reservationCharge}`;
+                    document.getElementById('gst').textContent = `₹${ticket.gst}`;
+                    document.getElementById('total-fare').textContent = `₹${ticket.totalFare}`;
+                    
+                } catch (error) {
+                    console.error('Error displaying ticket:', error);
+                    alert('Failed to display ticket details');
+                }
+            } else {
+                console.error("No ticket data found in session storage");
+                alert("No ticket information found. Please complete your booking first.");
+            }
+        });
+        
+        function getClassName(classCode) {
+            const classNames = {
+                '1A': 'First AC',
+                '2A': 'Second AC', 
+                '3A': 'Third AC',
+                'SL': 'Sleeper',
+                'CC': 'Chair Car',
+                'EC': 'Executive Chair Car',
+                'GN': 'General'
+            };
+            return classNames[classCode] || classCode;
+        }
+    </script>
+</body>
+</html>

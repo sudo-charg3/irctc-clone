@@ -7,6 +7,37 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-section::before {
+            display: none !important;
+        }
+        
+        .hero-section h2, 
+        .hero-section p {
+            text-shadow: none !important;
+            font-weight: 600 !important;
+            color: #000000 !important;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: none !important;
+            border: 1px solid #e0e0e0 !important;
+        }
+        
+        .cta-button {
+            box-shadow: none !important;
+            font-weight: 600 !important;
+            border: 1px solid #3275c7 !important;
+        }
+        
+        .info-card h3,
+        .info-card p,
+        .destination-info h4,
+        .destination-info p {
+            color: #000000 !important;
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
@@ -50,15 +81,72 @@
                 <a href="train_search.html" class="cta-button">Search Trains</a>
             </section>
 
-            <section class="popular-routes">
-                <h3>Popular Routes</h3>
-                <div class="routes-grid">
-                    <div class="route-card">
-                        <h4>Delhi - Mumbai</h4>
-                        <p>Rajdhani Express</p>
-                        <button onclick="searchRoute('Delhi', 'Mumbai')">Check Trains</button>
+            <section class="tourism-showcase">
+                <h3>Explore India by Rail</h3>
+                <div class="carousel-container">
+                    <button class="carousel-button prev-button"><i class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-track-container">
+                        <ul class="carousel-track">
+                            <li class="carousel-slide current-slide">
+                                <div class="destination-card">
+                                    <img src="assets/images/rajasthan.jpg" alt="Rajasthan" class="destination-image">
+                                    <div class="destination-info">
+                                        <h4>Rajasthan</h4>
+                                        <p>Experience the royal heritage, magnificent forts, and vibrant culture of the Land of Kings.</p>
+                                        <a href="train_search.html?from=NDLS&to=JP" class="destination-link">Find trains to Jaipur</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <div class="destination-card">
+                                    <img src="assets/images/delhi.jpg" alt="Delhi" class="destination-image">
+                                    <div class="destination-info">
+                                        <h4>New Delhi</h4>
+                                        <p>Discover the blend of ancient monuments and modern architecture in India's capital city.</p>
+                                        <a href="train_search.html?from=MMCT&to=NDLS" class="destination-link">Find trains to Delhi</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <div class="destination-card">
+                                    <img src="assets/images/uttarakhand.jpg" alt="Uttarakhand" class="destination-image">
+                                    <div class="destination-info">
+                                        <h4>Uttarakhand</h4>
+                                        <p>Embrace the tranquility of the Himalayas, sacred rivers, and lush valleys in the Land of Gods.</p>
+                                        <a href="train_search.html?from=NDLS&to=DDN" class="destination-link">Find trains to Dehradun</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <div class="destination-card">
+                                    <img src="assets/images/kerala.jpg" alt="Kerala" class="destination-image">
+                                    <div class="destination-info">
+                                        <h4>Kerala</h4>
+                                        <p>Experience the serene backwaters, pristine beaches, and verdant hills of God's Own Country.</p>
+                                        <a href="train_search.html?from=NDLS&to=ERS" class="destination-link">Find trains to Kochi</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="carousel-slide">
+                                <div class="destination-card">
+                                    <img src="assets/images/goa.jpg" alt="Goa" class="destination-image">
+                                    <div class="destination-info">
+                                        <h4>Goa</h4>
+                                        <p>Relax on golden beaches, enjoy water sports, and experience the unique Portuguese-influenced culture.</p>
+                                        <a href="train_search.html?from=MMCT&to=MAO" class="destination-link">Find trains to Goa</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- Add more route cards -->
+                    <button class="carousel-button next-button"><i class="fas fa-chevron-right"></i></button>
+                    <div class="carousel-nav">
+                        <button class="carousel-indicator current-slide"></button>
+                        <button class="carousel-indicator"></button>
+                        <button class="carousel-indicator"></button>
+                        <button class="carousel-indicator"></button>
+                        <button class="carousel-indicator"></button>
+                    </div>
                 </div>
             </section>
         </main>

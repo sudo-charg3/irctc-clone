@@ -141,7 +141,102 @@
             </div>
         </footer>
     </div>
-
     <script src="js/main.js"></script>
+    <!-- Add this at the bottom of payment.html, just before the closing </body> tag -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentForm = document.getElementById('payment-form');
+        
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get booking ID from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const bookingId = urlParams.get('bookingId');
+                
+                if (!bookingId) {
+                    alert('Invalid booking reference');
+                    return;
+                }
+                
+                // Get booking data from session storage
+                const bookingDataStr = sessionStorage.getItem('bookingData');
+                const fareDetailsStr = sessionStorage.getItem('fareDetails');
+                
+                if (!bookingDataStr || !fareDetailsStr) {
+                    alert('Booking data not found');
+                    return;
+                }
+                
+                // Show processing state
+                const payButton = document.querySelector('.pay-btn');
+                payButton.disabled = true;
+                payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                try {
+                    const booking = JSON.parse(bookingDataStr);
+                    const fareDetails = JSON.parse(fareDetailsStr);
+                    
+                    // Get payment method
+                    const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+                    
+                    // Get payment details
+                    let paymentDetails = {};
+                    
+                    // For UPI payment
+                    if (paymentMethod === 'upi') {
+                        const upiId = document.getElementById('upi-id').value;
+                        paymentDetails = { type: 'upi', upiId };
+                    } 
+                    // For card payment
+                    else {
+                        const cardNumber = document.getElementById('card-number').value;
+                        const expiryDate = document.getElementById('expiry-date').value;
+                        const cvv = document.getElementById('cvv').value;
+                        const cardholderName = document.getElementById('card-name').value;
+                        
+                        paymentDetails = {
+                            type: 'card',
+                            cardNumber,
+                            expiryDate,
+                            cardholderName
+                        };
+                    }
+                    
+                    // Create ticket data
+                    const ticketData = {
+                        ...booking,
+                        bookingId,
+                        ...fareDetails,
+                        paymentMethod,
+                        paymentDetails,
+                        paymentDate: new Date().toISOString(),
+                        status: 'CONFIRMED'
+                    };
+                    
+                    // Store ticket data
+                    sessionStorage.setItem('ticketData', JSON.stringify(ticketData));
+                    
+                    // Redirect to ticket page after a brief delay
+                    setTimeout(function() {
+                        console.log("Redirecting to ticket page...");
+                        window.location.href = "ticket.html?bookingId=" + bookingId;
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Error processing payment:', error);
+                    alert('An error occurred during payment processing');
+                    
+                    // Reset button
+                    payButton.disabled = false;
+                    payButton.innerHTML = 'Try Again';
+                }
+            });
+        } else {
+            console.error("Payment form not found");
+        }
+    });
+</script>
 </body>
 </html>
